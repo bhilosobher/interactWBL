@@ -12,10 +12,13 @@ class MentorAdmin(admin.ModelAdmin):
 class StudentAdmin(admin.ModelAdmin):
     list_display = ('user','mentor')
 
+class CourseAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'slug':('name',)}
+
 admin.site.register(Student, StudentAdmin)
 admin.site.register(Academic)
 admin.site.register(Mentor, MentorAdmin)
-admin.site.register(Course)
+admin.site.register(Course, CourseAdmin)
 admin.site.register(Company)
 admin.site.register(Enrolment)
 admin.site.register(Assignment)

@@ -65,7 +65,11 @@ class Course(models.Model):
     description = models.TextField(blank=True)
     year = models.IntegerField(blank=True,choices=YEAR_CHOICES)
     moodle = models.URLField(blank=True,null=True)
+    slug = models.SlugField()
 
+    def save(self,*args,**kwargs):
+        self.slug = slugify(self.name)
+        super(Course,self).save(*args,**kwargs)
 
     def __str__(self):
         return self.name
