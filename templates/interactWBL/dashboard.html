@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>InteractWBL</title>
+</head>
+<body>
+    <h1>This is the dashboard</h1>
+    <div>
+        More coming soon. <br>
+        <h1>Courses:</h1>
+        {% if courses %}
+        <ul>
+            {% for course in courses %}
+            <li>{{ course.name }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+            <strong>There are no courses in the database</strong>
+        {% endif %}
+    </div>
+    <div>
+        <a href="/interactWBL/about/">About</a>
+        <img src="{% static "images/wbl.png" %}" alt="wbl">
+        <br>
+    </div>
+    <div>
+         <h1>Competencies:</h1>
+        {% if competencies %}
+        <ul>
+            {% for competency in competencies %}
+            <li>{{ competency.name }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+            <strong>There are no competencies in the database</strong>
+        {% endif %}
+    </div>
+</body>
+</html>
