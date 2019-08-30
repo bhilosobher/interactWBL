@@ -1,0 +1,31 @@
+{% extends 'interactWBL/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+    Add Course
+{% endblock %}
+
+{%block body_block %}
+    <h1>Add a course</h1>
+    <div>
+        <form id="course_form" method="post" action="{% url 'interactWBL:add_course' %}">
+            {% csrf_token %}
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+            {% for field in form.visible_fields %}
+                <ul>
+                {% if field == textarea %}
+                            Please enter course descriptions
+                {% endif %}
+                    <li>
+                        {{ field.errors }}
+                        {{ field.help_text }}
+                        {{ field }}
+                    </li>
+                </ul>
+            {% endfor %}
+            <input type="submit" name="submit" value="Create Course">
+        </form>
+    </div>
+{% endblock %}

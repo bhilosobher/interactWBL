@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>
+        InteractWBL -
+        {% block title_block %}
+            Interactive Workbook for Academics
+        {% endblock %}
+    </title>
+    {% if user.is_authenticated %}
+        <p>
+            Welcome,
+            {% if user.first_name %}
+                {{ user.first_name }}
+            {% else %}
+                {{ user.username }}
+            {% endif %}
+        </p>
+    {% else %}
+        <p>Welcome.</p>
+    {% endif %}
+</head>
+<body>
+    {% block body_block %}
+    
+    {% endblock %}
+    <hr />
+    <div>
+        <ul>
+            {% if user.is_authenticated  %}
+                <li><a href="{% url 'auth_logout' %}?next=/interactWBL/">Logout</a></li>
+                <li><a href="{% url 'auth_password_change' %}">Change password</a></li>
+            {% else %}
+                <li><a href="{% url 'auth_login' %}">Login</a></li>
+                <li><a href="{% url 'registration_register' %}">Register</a></li>
+            {% endif %}
+            <li><a href="{% url 'interactWBL:about' %}">About</a></li>
+            <li><a href="{% url 'interactWBL:dashboard' %}">Dashboard</a></li>
+            <li><a href="{% url 'interactWBL:index' %}">Index</a></li>
+        </ul>
+    </div>
+</body>
+</html>

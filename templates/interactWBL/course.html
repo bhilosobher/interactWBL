@@ -1,0 +1,27 @@
+{% extends 'interactWBL/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+    {% if course %}
+        {{ course.name }}
+    {% else %}
+        Course doesn't exist
+    {% endif %}
+{% endblock %}
+
+{% block body_block %}
+     {% if course %}
+            <h1>{{ course.name }}</h1>
+            {% if students %}
+                <ul>
+                {% for student in students %}
+                    <li><a href="https://www.google.com">{{ student.user.first_name }} {{ student.user.last_name }}</a></li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <strong>No students currently enrolled in course.</strong>
+            {% endif %}
+        {% else %}
+            The specified course does not exist!
+        {% endif %}
+{% endblock %}

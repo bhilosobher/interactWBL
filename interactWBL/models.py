@@ -2,14 +2,6 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.template.defaultfilters import slugify
 
-"""
-- in mod clar avem o problema cu many-to-many fields. Ne trebuie o metoda sa asociem chestiile asa cum ne convine. S-ar
-putea sa am nevoie de mai multe entitati pur pentru tracking cu foregin keys
-- avem o problema cu acele "default" si "company object". 
-- se pare ca acest models este INCA o mizerie ceea ce a prost, pentru ca e baza proiectului. pe de alta parte, odata ce
-l-am dibuit, dibuit ramane.
-"""
-
 
 class Company(models.Model):
     name = models.CharField(max_length=128)
@@ -39,7 +31,7 @@ class Student(models.Model):
     )
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     mentor = models.ForeignKey(Mentor, on_delete=models.SET_NULL, null=True)
-    year = models.IntegerField(default=1,choices=YEAR_CHOICES)
+    year = models.CharField(default=1,choices=YEAR_CHOICES,max_length=8)
 
     def __str__(self):
         return self.user.username
@@ -52,8 +44,9 @@ class Academic(models.Model):
         return self.user.username
 
 
-class Course(models.Model):
+class Course (models.Model):
     YEAR_CHOICES = (
+        ('0', 'mixed year'),
         ('1', 'first year'),
         ('2', 'second year'),
         ('3', 'third year'),
@@ -63,12 +56,20 @@ class Course(models.Model):
     name = models.CharField(max_length=128)
     teacher = models.ForeignKey(Academic, blank=True, on_delete=models.SET_NULL, null=True)
     description = models.TextField(blank=True)
-    year = models.IntegerField(blank=True,choices=YEAR_CHOICES)
-    moodle = models.URLField(blank=True,null=True)
+    year = models.CharField(blank=True,choices=YEAR_CHOICES, null=True,max_length=8)
+    moodle = models.URLField(blank=True,null=True,max_length=200)
     slug = models.SlugField()
 
     def save(self,*args,**kwargs):
-        self.slug = slugify(self.name)
+        i = 0
+        courses = Course.objects.all()
+        for c in courses:
+            if c.name == self.name:
+                i+=1
+        if i == 0:
+            self.slug = slugify(self.name)
+        else:
+            self.slug = slugify(self.name) + i.__str__()
         super(Course,self).save(*args,**kwargs)
 
     def __str__(self):

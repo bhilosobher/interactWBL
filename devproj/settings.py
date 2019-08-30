@@ -31,13 +31,14 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'interactWBL.apps.InteractwblConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'interactWBL.apps.InteractwblConfig',
+
     'registration', # django registration redux
 
 ]
@@ -147,6 +148,6 @@ ACCOUNT_ACTIVATION_DAYS = 7
 
 REGISTRATION_AUTO_LOGIN = True
 
-LOGIN_REDIRECT_URL = '/dashboard/'
+LOGIN_REDIRECT_URL = '/interactWBL/dashboard/'
 
 LOGIN_URL = 'accounts/login/'
