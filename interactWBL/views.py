@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from interactWBL.models import Course, Academic, Competency, Enrolment, Student, Mentor
+from interactWBL.models import Course, Academic, Competency, Enrolment, Student, Mentor,Company
 from django.contrib.auth.models import User
 from django.contrib import auth
 from interactWBL.forms import CourseForm, StudentForm, MentorForm
@@ -26,17 +26,23 @@ def show_course(request, course_name_slug):
         # check if a course with the name passed as a parameter from the urls engine actually exists
         # then pick all enrollments associated with such course
         course = Course.objects.get(slug = course_name_slug)
+        print (course_name_slug)
+        print(course)
         enrolments = Enrolment.objects.filter(course = course)
+        # some debug code
+        # print(enrolments.__len__())
+        # for e in enrolments:
+        #    print(e)
         students = []
 
         # then, for all these enrollment, put the enrolled students in a list and order them by last name
         for e in enrolments:
             students.append(e.student)
 
-        def sort_fun(s):
+        def sort_funct(s):
             return s.user.last_name
 
-        students.sort(key = sort_fun)
+        students.sort(key = sort_funct)
         context_dict['course'] = course
         context_dict['students'] = students
     except Course.DoesNotExist:
@@ -45,22 +51,36 @@ def show_course(request, course_name_slug):
         context_dict['students'] = None
     return render(request,'interactWBL/course.html',context_dict)
 
-
+@login_required()
 def add_course(request):
-    form = CourseForm()
+    is_teacher = False
+    academics = Academic.objects.all()
+    for a in academics:
+        if a.user == request.user:
+            is_teacher = True
 
-    # if http POST
-    if request.method =='POST':
-        form = CourseForm(request.POST)
+    if request.user.is_superuser or is_teacher:
+        form = CourseForm()
 
-        # if form data is valid, save the new course to the DB
-        if form.is_valid():
-            course = form.save(commit=True)
-            # what do after created course succesfully? redirect to course page/dashboard
-            return dashboard(request)
-        else:
-            print(form.errors)
-    return render(request,'interactWBL/add_course.html',{'form':form})
+        # if http POST
+        if request.method =='POST':
+            form = CourseForm(request.POST)
+
+            # if form data is valid, save the new course to the DB
+            if form.is_valid():
+                course = form.save(commit=False)
+                teacher = Academic.objects.get_or_create(user=request.user)[0]
+                course.teacher = teacher
+                course.save()
+                # what do after created course succesfully? redirect to course page/dashboard
+                return dashboard(request)
+            else:
+                print(form.errors)
+        return render(request, 'interactWBL/add_course.html', {'form': form})
+    else:
+        return HttpResponse("You do not have permission to access this page.")
+
+
 
 
 def about(request):
@@ -131,7 +151,11 @@ def profile(request, username):
         student = True
     else:
         form = MentorForm()
-        userprofile = Mentor.objects.get_or_create(user=user)[0]
+        if(request.user.is_superuser):
+            userprofile = None
+        else:
+            userprofile = Mentor.objects.get_or_create(user=user)[0]
+
     if request.method == 'POST':
         if form:
             if student:

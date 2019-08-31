@@ -3,6 +3,24 @@ from django.db import models
 from django.template.defaultfilters import slugify
 
 
+class Competency(models.Model):
+    COMPETENCY_TYPE_CHOICES = (
+        ('technical', 'Technical competency'),
+        ('social', 'Social competency'),
+        ('personal', 'Personal competency')
+    )
+    name = models.CharField(max_length=128)
+    description = models.TextField()
+    type = models.CharField(choices=COMPETENCY_TYPE_CHOICES, default='technical', max_length=16)
+
+    class Meta:
+        verbose_name_plural = "competencies"
+
+    def __str__(self):
+        return self.name
+
+
+
 class Company(models.Model):
     name = models.CharField(max_length=128)
 
@@ -32,6 +50,8 @@ class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     mentor = models.ForeignKey(Mentor, on_delete=models.SET_NULL, null=True)
     year = models.CharField(default=1,choices=YEAR_CHOICES,max_length=8)
+    competencies_in_focus = models.ManyToManyField(Competency, blank=True)
+
 
     def __str__(self):
         return self.user.username
@@ -58,6 +78,9 @@ class Course (models.Model):
     description = models.TextField(blank=True)
     year = models.CharField(blank=True,choices=YEAR_CHOICES, null=True,max_length=8)
     moodle = models.URLField(blank=True,null=True,max_length=200)
+    ILOs = models.TextField(blank=True,null=True)
+    missed_lecture_procedure = models.TextField(blank=True,null=True)
+    lecture_recordings = models.URLField(blank=True,null=True,max_length=300)
     slug = models.SlugField()
 
     def save(self,*args,**kwargs):
@@ -82,23 +105,6 @@ class Enrolment(models.Model):
 
     def __str__(self):
         return self.student.user.username + ' in ' + self.course.name
-
-
-class Competency(models.Model):
-    COMPETENCY_TYPE_CHOICES = (
-        ('technical', 'Technical competency'),
-        ('social', 'Social competency'),
-        ('personal', 'Personal competency')
-    )
-    name = models.CharField(max_length=128)
-    description = models.TextField()
-    type = models.CharField(choices=COMPETENCY_TYPE_CHOICES, default='technical', max_length=16)
-
-    class Meta:
-        verbose_name_plural = "competencies"
-
-    def __str__(self):
-        return self.name
 
 
 class Assignment(models.Model):

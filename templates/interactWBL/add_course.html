@@ -15,14 +15,11 @@
             {% endfor %}
             {% for field in form.visible_fields %}
                 <ul>
-                {% if field == textarea %}
-                            Please enter course descriptions
-                {% endif %}
                     <li>
                         {{ field.errors }}
                         {{ field.help_text }}
-                        {{ field }}
                     </li>
+                    {{ field }}
                 </ul>
             {% endfor %}
             <input type="submit" name="submit" value="Create Course">

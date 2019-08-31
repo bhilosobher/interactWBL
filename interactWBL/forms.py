@@ -27,7 +27,7 @@ class MentorForm(forms.ModelForm):
 
     class Meta:
         model = Mentor
-        exclude = ('user',)
+        exclude = ('user','competency_in_focus')
 
 
 class CourseForm(forms.ModelForm):
@@ -42,7 +42,11 @@ class CourseForm(forms.ModelForm):
     year = forms.ChoiceField(choices=YEAR_CHOICES,initial=1,help_text="Please enter the year group for the course")
     moodle = forms.URLField(max_length=200,
                             help_text="Please enter link to course page in existing learning environment")
-    description = forms.Textarea()
+    description = forms.Textarea(attrs={'size': 5, 'placeholder': 'Enter course description'})
+    ILOs = forms.Textarea()
+    missed_lecture_procedure = forms.Textarea()
+    lecture_recordings = forms.URLField(required=False, max_length=300, help_text="Please enter the link to the video "
+                                                                                  "recordings resource")
     slug = forms.CharField(widget=forms.HiddenInput(), required=False)
 
     def clean(self):
@@ -52,10 +56,14 @@ class CourseForm(forms.ModelForm):
         if moodle and not (moodle.startswith('https://') or moodle.startswith('http://')):
             moodle ='https'+ moodle
             cleaned_data['moodle'] = moodle
+
             return cleaned_data
 
 
 
     class Meta:
+        help_texts = {'description': 'Please enter course description',
+                      'missed_lecture_procedure': 'Please specify themissed lectures procedure',
+                      'ILOs': 'Please list the intended learning outcomes of the course',}
         model = Course
         exclude = ('teacher',)

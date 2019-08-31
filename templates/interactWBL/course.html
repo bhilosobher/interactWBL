@@ -15,7 +15,7 @@
             {% if students %}
                 <ul>
                 {% for student in students %}
-                    <li><a href="https://www.google.com">{{ student.user.first_name }} {{ student.user.last_name }}</a></li>
+                    <li><a href="{% url 'interactWBL:profile' student.user.username %}">{{ student.user.first_name }} {{ student.user.last_name }}</a></li>
                 {% endfor %}
                 </ul>
             {% else %}

@@ -14,7 +14,7 @@ def populate():
     comps_no = len(competencies_list)
 
     # academic first names
-    mnames = ['Mechelle', 'Evelia', 'Sylvie', 'Stephania', 'Octavio', 'Shona', 'Spencer', 'Natisha', 'Guadalupe',
+    academics_names = ['Mechelle', 'Evelia', 'Sylvie', 'Stephania', 'Octavio', 'Shona', 'Spencer', 'Natisha', 'Guadalupe',
              'Lea', ]
 
     # course names for courses to be created
@@ -25,19 +25,20 @@ def populate():
     # collect existing students in a list and determine their number
     students_list = list(Student.objects.all())
     studs_no = len(students_list)
+    print("there are " + str(studs_no) + " students")
 
 
     # create 10 users, then associate 10 academics with the 10 users & create 10 courses, 1 for taught by each academic
 
     i = 0
-    for n in mnames:
+    for n in academics_names:
         # create a user with name from the list above
         u = User.objects.get_or_create(username=n, password='securepassword')[0]
         # then associate an academic profile with that user
         a = Academic.objects.get_or_create(user=u)[0]
-        u.first_name = mnames[i]
+        u.first_name = academics_names[i]
         u.last_name = names.get_last_name()
-        u.email = mnames[i].lower() + '.'+ u.last_name.lower()+'@gla.ac.uk'
+        u.email = academics_names[i].lower() + '.'+ u.last_name.lower()+'@gla.ac.uk'
         u.save()
         # after the academic profile is fully set up, create a course taught by that academic
         c = Course.objects.get_or_create(teacher=a, year = random.randint(1,5), name=course_names[i])[0]
@@ -54,15 +55,17 @@ def populate():
         """
                 this next sections deals with enrolling students in courses (according to the year of the course)
         """
+    course_list = list(Course.objects.all())
+    for course in course_list:
+        print(course)
+        print("now enrolling:")
         for s in students_list:
-            if s.year == c.year:
-                # half of the time the loop won't do anything, so that no all year X students are enrolled in all year X courses
-                if random.randint(0,1) == 1:
-                    pass
-                e = Enrolment.objects.get_or_create(course=c,student=s)[0]
+            if s.year == course.year:
+                e = Enrolment.objects.get_or_create(course=course, student=s)[0]
+                e.save()
+                print(e)
             else:
                 pass
-
 
 
     print('Printing created academics' + '\n')
