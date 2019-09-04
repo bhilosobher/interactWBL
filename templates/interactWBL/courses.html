@@ -1,0 +1,28 @@
+
+
+
+{% if courses %}
+    <div class="course-row">
+        {% for c in courses %}
+            <div class="course-column">
+                <div class="course-card">
+                    <a href="{% url 'interactWBL:show_course' c.slug %}" class="btn btn-primary course-button">Go to course</a>
+                    <br>
+                    <br>
+                    <strong>{{ c.name }}</strong>
+                    <p> {{ c.description| slice:"0:100" }}...</p>
+
+
+
+                </div>
+            </div>
+        {% endfor %}
+
+    </div>
+
+{% else %}
+    <p>You have no courses at the moment.</p>
+{% endif %}
+
+
+

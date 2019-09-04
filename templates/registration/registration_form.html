@@ -4,7 +4,17 @@
     Register
 {% endblock %}
 
-{% block body_block %}
+<!-- instead of display the full options in the sidebar, only display link back to landing -->
+{% block no_sidebar %}
+      <li class="nav-item">
+            <a class="nav-link" href="{% url 'interactWBL:dashboard' %}">
+                <i class="fas fa-home"></i></i>
+                <span>Back to landing</span>
+            </a>
+        </li>
+{% endblock %}
+
+{% block content_block %}
     <h1>Register here</h1>
     <form action="." method="post">
         {% csrf_token %}

@@ -8,7 +8,7 @@ $("#about-btn").click( function(event) {
 
 
 	$("p").hover( function() {
-		$(this).css('color', 'blue');
+		$(this).css('color', 'black');
 	},
 	function() {
 		$(this).css('color', 'black');

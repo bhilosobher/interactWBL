@@ -1,0 +1,22 @@
+{% extends 'interactWBL/base.html' %}
+
+{% load staticfiles %}
+
+{% block no_sidebar %}
+      <li class="nav-item">
+            <a class="nav-link" href="{% url 'interactWBL:dashboard' %}">
+                <i class="fas fa-home"></i></i>
+                <span>Back to landing or dashboard</span>
+            </a>
+        </li>
+{% endblock %}
+
+{% block content_block %}
+        <!-- Page Content -->
+        <h1 class="display-1">404</h1>
+        <p class="lead">Page not found. You can
+          <a href="javascript:history.back()">go back</a>
+          to the previous page, or
+          <a href="index.html">return home</a>.</p>
+
+      {% endblock %}

@@ -10,7 +10,7 @@ from interactWBL.models import Student, User, Mentor
 
 def populate():
     mentor_list = list(Mentor.objects.all())
-    for i in range(1,200):
+    for i in range(1,100):
         # set up all the student info so it mocks UoG student info
         student_number = 2000000 + random.randint(0,999999)
         f_name = names.get_last_name()
@@ -23,6 +23,8 @@ def populate():
         # now that we have all the pieces, create the user
         u = User.objects.get_or_create(username=student_id,password='securepassword',email=student_email,
                                        last_name=l_name,first_name=f_name)[0]
+        u.set_password('securepassword')
+        u.save()
         # lastly create the user, using the random module to assign a random mentor from the existing ones
         s = Student.objects.get_or_create(user=u, year = student_year,mentor=mentor_list[random.randint(0,len(mentor_list)-1)])
 

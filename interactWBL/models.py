@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.template.defaultfilters import slugify
+from datetime import timedelta, timezone
 
 
 class Competency(models.Model):
@@ -9,7 +10,7 @@ class Competency(models.Model):
         ('social', 'Social competency'),
         ('personal', 'Personal competency')
     )
-    name = models.CharField(max_length=128)
+    name = models.CharField(max_length=128, unique=True)
     description = models.TextField()
     type = models.CharField(choices=COMPETENCY_TYPE_CHOICES, default='technical', max_length=16)
 
@@ -64,6 +65,22 @@ class Academic(models.Model):
         return self.user.username
 
 
+class StudentLogins (models.Model):
+    student = models.ForeignKey(Student)
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.student) + ':' + str(self.date)
+
+
+class MentorLogins(models.Model):
+    mentor = models.ForeignKey(Mentor)
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.mentor) + ':' + str(self.date)
+
+
 class Course (models.Model):
     YEAR_CHOICES = (
         ('0', 'mixed year'),
@@ -105,13 +122,13 @@ class Enrolment(models.Model):
 
     def __str__(self):
         return self.student.user.username + ' in ' + self.course.name
-
+# assigment.competency.add(c)
 
 class Assignment(models.Model):
     name = models.CharField(max_length=128)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, blank=True, null=True)
     description = models.TextField()
-    deadline = models.DateField()
+    deadline = models.DateField(auto_now_add=True)
     mentor = models.ForeignKey(Mentor, blank=True, null=True)
     student = models.ForeignKey(Student, blank=True, null=True)
     competencies = models.ManyToManyField(Competency)
@@ -153,9 +170,9 @@ class Submission(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     feedback = models.TextField(max_length=1000, blank=True)
     grade = models.CharField(max_length=16, default="not graded")
-    file = models.FileField(upload_to='coursework_submissions')
+    file = models.FileField(upload_to='coursework_submissions', null=True,blank = True)
     date = models.DateField(auto_now_add=True)
-    grader = models.ForeignKey(Academic, on_delete=models.CASCADE, blank=True)
+    grader = models.ForeignKey(Academic, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return 'submission ' + str(self.id)

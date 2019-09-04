@@ -1,0 +1,21 @@
+{% extends 'interactWBL/base.html' %}
+
+{% block title_block %}
+   Already registered
+{% endblock %}
+
+<!-- instead of display the full options in the sidebar, only display link back to landing -->
+
+
+{% block content_block %}
+    <div class="container">
+      <h1>You are already logged in</h1>
+        <br>
+      <p><a href="{% url 'interactWBL:dashboard' %}">Back to dashboard</a></p>
+
+        <button href="#" data-toggle="modal" data-target="#logoutModal">Logout</button>
+    </div>
+
+{% endblock %}
+
+<!-- follows simple template format from Tango with Django-->

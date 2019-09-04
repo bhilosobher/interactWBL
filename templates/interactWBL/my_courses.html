@@ -1,0 +1,25 @@
+{% extends 'interactWBL/base.html' %}
+{% load staticfiles %}
+{% load interactwbl_template_tags %}
+
+{% block title_block %}
+    {% if user.first_name %}
+    {{ user.first_name }}'s Courses
+    {% else %}
+    My courses
+    {% endif %}
+
+{% endblock %}
+
+{% block breadcrumbs %}
+    <li class="breadcrumb-item">
+        <a href="">My Courses</a>
+    </li>
+{% endblock %}
+
+{% block content_block%}
+    {% get_courses user %}
+    {% if is_academic %}
+    <a href="{% url 'interactWBL:add_course' %}" class="button" id="add_competency_button">Add a new course</a>
+    {% endif %}
+{% endblock %}

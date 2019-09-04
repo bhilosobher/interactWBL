@@ -1,8 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 # Register your models here.
-from .models import Student, Mentor, Academic, Course, Competency, Company, User, Enrolment, Assignment,\
-    PersonalCompetency, CompetencyEndorsement, CourseTarget, Reflection, Submission, Appraisal
+from .models import Student, Mentor, Academic, Course, Competency, Company, Enrolment, Assignment,\
+    PersonalCompetency, CompetencyEndorsement, CourseTarget, Reflection, Submission, Appraisal, StudentLogins,MentorLogins
 class CompetencyAdmin(admin.ModelAdmin):
     list_display = ('name','description','type')
 
@@ -29,3 +29,5 @@ admin.site.register(Reflection)
 admin.site.register(Submission)
 admin.site.register(Appraisal)
 admin.site.register(Competency, CompetencyAdmin)
+admin.site.register(StudentLogins)
+admin.site.register(MentorLogins)

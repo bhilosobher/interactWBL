@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load staticfiles %}
+<head>
+	<title>InteractWBL</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->	
+	<link rel="icon" type="image/png" href="{% static 'images/icons/favicon.ico' %}"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'landing-vendor/bootstrap/css/bootstrap.min.css' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'fonts/Linearicons-Free-v1.0.0/icon-font.min.css' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'landing-vendor/animate/animate.css' %}">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="{% static 'landing-vendor/css-hamburgers/hamburgers.min.css' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'landing-vendor/animsition/css/animsition.min.css' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'landing-vendor/select2/select2.min.css' %}">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="{% static 'landing-vendor/daterangepicker/daterangepicker.css' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'css/util.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+<!--===============================================================================================-->
+</head>
+<body>
+	
+	<div class="limiter">
+		<div class="container-login100">
+            <div class="wrap-login100">
+                <form class="login100-form validate-form">
+					<span class="login100-form-title p-b-34">
+						Welcome to <strong>InteractWBL</strong>
+					</span>
+
+
+                       <div class="w-full text-center">
+                            <a href="{% url 'registration_register' %}" class="button"> Signup  </a>
+
+
+                             <a href="{% url 'auth_login' %}" class="button" id="login">Login</a>
+                       </div>
+
+
+
+
+
+
+                    <div class="w-full text-center p-t-27 p-b-239">
+						<span class="txt1">
+							Forgot
+						</span>
+
+                        <a href="{# {% url 'auth_password_reset'%} #}" class="txt2">
+                            password?
+                        </a>
+                    </div>
+
+                    <div class="w-full text-center">
+                        <a href="{% url 'interactWBL:about' %}" class="txt3">
+                            About
+                        </a>
+                    </div>
+                </form>
+
+                <div class="login100-more" style="background-image: url({% static 'images/bg-01.jpg' %});"></div>
+			</div>
+		</div>
+	</div>
+	
+	
+
+	<div id="dropDownSelect1"></div>
+	
+<!--===============================================================================================-->
+	<script src="{% static 'landing-vendor/jquery/jquery-3.2.1.min.js' %}"></script>
+<!--===============================================================================================-->
+	<script src="{% static 'landing-vendor/animsition/js/animsition.min.js' %}"></script>
+<!--===============================================================================================-->
+	<script src="{% static 'landing-vendor/bootstrap/js/popper.js' %}"></script>
+	<script src="{% static 'landing-vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+<!--===============================================================================================-->
+	<script src="{% static 'landing-vendor/select2/select2.min.js' %}"></script>
+	<script>
+		$(".selection-2").select2({
+			minimumResultsForSearch: 20,
+			dropdownParent: $('#dropDownSelect1')
+		});
+	</script>
+<!--===============================================================================================-->
+	<script src="{%  static 'landing-vendor/daterangepicker/moment.min.js' %}"></script>
+	<script src="{% static 'landing-vendor/daterangepicker/daterangepicker.js' %}"></script>
+<!--===============================================================================================-->
+	<script src="{% static 'landing-vendor/countdowntime/countdowntime.js' %}"></script>
+<!--===============================================================================================-->
+
+
+</body>
+</html>

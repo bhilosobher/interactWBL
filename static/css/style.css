@@ -1,4 +1,86 @@
+#navbar{
+    text-align: center;
+}
+
+#logodiv{
+    margin: 0 auto;
+}
+
+
 #logo{
 	max-width:90%;
-    max-height: 90%;
+    height: auto !important;
+}
+
+.button {
+
+  background-color: #4269f5;
+  border: none;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 20px;
+  margin: 4px 2px;
+  cursor: pointer;
+  height: 50px;
+  display: inline-block;
+  width: auto;
+
+
+}
+
+
+#add_competency_button {
+	position: relative;
+	margin: 20px;
+}
+
+
+/* Float four columns side by side */
+.course-column {
+  float: left;
+  width: 25%;
+  padding: 0 10px;
+   display: table-cell; /* Make elements inside the container behave like table cells */
+   height: 250px;
+   overflow:auto;
+}
+
+/* Remove extra left and right margins, due to padding in columns */
+.course-row {
+	margin: 0 -5px;
+ display: table; /* Make the container element behave like a table */
+    width: 100%; /* Set full-width to expand the whole page */}
+
+/* Clear floats after the columns */
+.course-row:after {
+  content: "";
+  display: table;
+  clear: both;
+
+}
+
+/* Style the counter cards */
+.course-card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* this adds the "card" effect */
+  padding: 16px;
+  text-align: center;
+  background-color: #f1f1f1;
+  min-height: 230px;
+ }
+
+/* Responsive columns - one column layout (vertical) on small screens */
+@media screen and (max-width: 600px) {
+  .course-column {
+    width: 100%;
+    display: block;
+    margin-bottom: 20px;
+  }
+}
+
+.course-button{
+	position: relative;
+	top: 20px;
 }

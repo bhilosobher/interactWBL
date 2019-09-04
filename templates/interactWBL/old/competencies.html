@@ -1,0 +1,21 @@
+{% extends 'interactWBL/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+    Competencies
+{% endblock %}
+
+{%block content_block %}
+     <div>
+         <h1>Competencies:</h1>
+        {% if competencies %}
+        <ul>
+            {% for competency in competencies %}
+            <li>{{ competency.name }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+            <strong>There are no competencies in the database</strong>
+        {% endif %}
+    </div>
+{% endblock %}

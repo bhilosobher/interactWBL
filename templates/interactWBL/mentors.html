@@ -1,0 +1,81 @@
+{% extends 'interactWBL/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+    Mentors
+{% endblock %}
+
+{% block breadcrumbs %}
+    <li class="breadcrumb-item">
+        <a href="#">Mentors</a>
+    </li>
+
+{% endblock %}
+
+{%block content_block %}
+    {% if is_academic %}
+    <h3>Mentors</h3>
+
+        {% if mentors %}
+            <br>
+            <h3>Students enrolled in course:</h3>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Company</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Company</th>
+
+                        </tr>
+                        </tfoot>
+                        <tbody>
+
+                        {% for mentor in mentors %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'interactWBL:profile' mentor.user.username %}">{{ mentor.user.first_name }} {{ mentor.user.last_name }}</a>
+                                </td>
+                                <td>{{ mentor.user.email }}</td>
+                                <td>{{ mentor.company }}</td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            </div>
+        {% else %}
+            <strong>No mentors currently registered.</strong>
+        {% endif %}
+
+    {% elif is_student %}
+        {% if student_mentor %}
+            <h3>Your assigned mentor is:</h3>
+         <a href="{% url 'interactWBL:profile' student_mentor.user.username %}">{{ student_mentor.user.first_name }} {{ student_mentor.user.last_name }}</a>
+            {% else %}
+            <h3>You are not currently assigned to a mentor - if you do in fact have a mentor, please contact the system administrator or prompt the mentor to register - otherwise please speak with your employer.</h3>
+            {% endif %}
+    {% endif %}
+{% endblock %}
+
+{% block js_block %}
+    <!-- Demo scripts for this page-->
+    <script src="{% static 'js/demo/datatables-demo.js' %}"></script>
+
+    <!-- Page level plugin JavaScript-->
+    <script src="{% static 'vendor/datatables/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'vendor/datatables/dataTables.bootstrap4.js' %}"></script>
+
+{% endblock %}

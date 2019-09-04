@@ -4,7 +4,18 @@
     Registration Complete
 {% endblock %}
 
-{% block body_block %}
+<!-- instead of display the full options in the sidebar, only display link back to landing -->
+{% block no_sidebar %}
+      <li class="nav-item">
+            <a class="nav-link" href="{% url 'interactWBL:dashboard' %}">
+                <i class="fas fa-home"></i></i>
+                <span>Back to landing</span>
+            </a>
+        </li>
+{% endblock %}
+
+
+{% block content_block %}
     <h1>Registration completed</h1>
     <p>You are now registered!</p>
 {% endblock %}

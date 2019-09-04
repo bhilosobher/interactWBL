@@ -1,7 +1,35 @@
 from django import forms
 from interactWBL.models import Course, Reflection, Competency, PersonalCompetency, Mentor, Student, Company
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 # these are form models which handle creating and saving a model into the database (by users)
+
+
+# SignUpForm taken from https://simpleisbetterthancomplex.com/tutorial/2017/02/18/how-to-create-user-sign-up-view.html
+class SignUpForm(UserCreationForm):
+
+    first_name = forms.CharField(max_length=30, required=True, help_text='')
+    last_name = forms.CharField(max_length=30, required=True, help_text='')
+    email = forms.EmailField(max_length=254, help_text='Required. Please provide your university or company email.')
+
+    class Meta:
+        model = User
+        fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2', )
+
+class CompetencyForm(forms.ModelForm):
+    COMPETENCY_TYPE_CHOICES = (
+        ('technical', 'Technical competency'),
+        ('social', 'Social competency'),
+        ('personal', 'Personal competency')
+    )
+    name = forms.CharField(max_length=128, help_text="Please enter the name for your new competency")
+    description = forms.Textarea()
+    type = forms.ChoiceField( choices=COMPETENCY_TYPE_CHOICES, help_text="Please select the new competency's type")
+    class Meta:
+        help_texts = {'description': 'Please define and describe the competency',}
+        model = Competency
+        exclude = ()
+
 
 
 class StudentForm(forms.ModelForm):
@@ -42,7 +70,7 @@ class CourseForm(forms.ModelForm):
     year = forms.ChoiceField(choices=YEAR_CHOICES,initial=1,help_text="Please enter the year group for the course")
     moodle = forms.URLField(max_length=200,
                             help_text="Please enter link to course page in existing learning environment")
-    description = forms.Textarea(attrs={'size': 5, 'placeholder': 'Enter course description'})
+    description = forms.Textarea()
     ILOs = forms.Textarea()
     missed_lecture_procedure = forms.Textarea()
     lecture_recordings = forms.URLField(required=False, max_length=300, help_text="Please enter the link to the video "
@@ -58,8 +86,6 @@ class CourseForm(forms.ModelForm):
             cleaned_data['moodle'] = moodle
 
             return cleaned_data
-
-
 
     class Meta:
         help_texts = {'description': 'Please enter course description',

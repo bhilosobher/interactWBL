@@ -5,7 +5,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'devproj.settings')
 import django,names,random
 
 django.setup()
-from interactWBL.models import User, Academic, Course, Competency, CourseTarget, Student, Enrolment
+from interactWBL.models import User, Academic, Course, Competency, CourseTarget, Student, Enrolment, Assignment, Submission
 
 
 def populate():
@@ -33,7 +33,9 @@ def populate():
     i = 0
     for n in academics_names:
         # create a user with name from the list above
-        u = User.objects.get_or_create(username=n, password='securepassword')[0]
+        u = User.objects.get_or_create(username=n.lower(), password='')[0]
+        u.set_password('securepassword')
+        u.save()
         # then associate an academic profile with that user
         a = Academic.objects.get_or_create(user=u)[0]
         u.first_name = academics_names[i]
@@ -41,7 +43,12 @@ def populate():
         u.email = academics_names[i].lower() + '.'+ u.last_name.lower()+'@gla.ac.uk'
         u.save()
         # after the academic profile is fully set up, create a course taught by that academic
-        c = Course.objects.get_or_create(teacher=a, year = random.randint(1,5), name=course_names[i])[0]
+
+        c = Course.objects.get_or_create(teacher=a, year = random.randint(1,5), name=course_names[i],
+                                         lecture_recordings="http://www.echo360.com",missed_lecture_procedure="The exact procedure will be announced later, but please make sure to message me if you have any pressing doubts at the moment.",
+                                         ILOs="The course aims to provide students with mathematical/quantitative skills and knowledge that consititute the foundation for techniques and instruments in both microeconomic theory and intertemporal macroeconomics (such as multivariate calculus and integration, constrained optimisation, differential equations, dynamic programming methods, functional analysis), and to demonstrate various mathematical techniques are applied to economic problems.",
+                                         moodle='https://moodle.org/',
+                                         description="The aim of this course is to provide students with a comprehensive overview of web application development. It will provide students with the skills to design and develop distributed web applications in a disciplined manner, using a range of tools and technologies. It will also strengthen their understanding of the context and rationale of distributed systems.")[0]
         i += 1 # this is so we iterate through academic and course names at the same time
 
         """
@@ -66,6 +73,29 @@ def populate():
                 print(e)
             else:
                 pass
+    print("Generating assignments...")
+    for course in course_list[0:6]:
+        # for half of the courses determine the students enrolled
+        enrollments  = list(Enrolment.objects.filter(course= course))
+        students_in_course =[]
+        for e in enrollments:
+            students_in_course.append(e.student)
+        for student in students_in_course:
+            assignment = Assignment.objects.get_or_create(name=course.name + " coding assignment", course= course,
+                                                          description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+                                                          mentor=student.mentor, student=student)[0]
+            # print info to show to the user while they are waiting for pop script to complete:
+            print("created assignment: "+assignment.__str__())
+            # for each of the created assignments, associate some competencies with it
+            for i in range(1,3):
+                random_competency = competencies_list[random.randint(0,comps_no-1)]
+                assignment.competencies.add(random_competency)
+            # for each assignment, create a submission
+            submission = Submission.objects.get_or_create(student=student, assignment=assignment)
+            submission.file.name='codesubmission.txt'
+            submission.save()
+            print(submission)
+
 
 
     print('Printing created academics' + '\n')

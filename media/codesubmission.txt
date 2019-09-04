@@ -1,0 +1,16 @@
+	if self.request.user.is_authenticated:
+            user = self.request.user
+            try:
+                logged_student = Student.objects.get(user=user)
+                StudentLogins.objects.create(student=logged_student)
+                print("One student login logged!")
+            except Student.DoesNotExist:
+                print("passed!")
+                pass
+            try:
+                logged_mentor = Mentor.objects.get(user=user)
+                MentorLogins.objects.create(mentor=logged_mentor)
+                print("One mentor login logged!")
+            except Mentor.DoesNotExist:
+                print("passed!")
+                pass

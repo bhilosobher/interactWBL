@@ -5,11 +5,33 @@
     About
 {% endblock %}
 
-{%block body_block %}
- <h1>Casian's MSc Software Development project</h1>
-    <div>
+
+<!-- instead of display the full options in the sidebar, only display link back to landing -->
+{% block no_sidebar %}
+      <li class="nav-item">
+            <a class="nav-link" href="{% url 'interactWBL:dashboard' %}">
+                <i class="fas fa-home"></i></i>
+                <span>Back to landing</span>
+            </a>
+        </li>
+{% endblock %}
+
+
+{%block content_block %}
+
+    <div class="container-fluid">
+        <h1>InteractWBL - a MSc Software Development project</h1>
         <h2>
-            Casian worked hard to build this.
+            The purpose of this application is to facilitate the delivery of a work-based learning Graduate Apprenticeship.
         </h2>
+        <p>
+            WBL proposes that learning should take place in combination with, and through work – its sole aim being to maximize learning. Learning would be maximized because applying knowledge and skills in the context of the workplace – with immediate practical outcomes– the learning experience is more meaningful and engaging, and so the individual is more likely to appreciate and thus retain the knowledge gained in the process.
+        </p>
+        <p>With work-based learning, a great deal of importance is put on the personal experience of the learner – and not adventitiously so, because, as McLennan & Keating remark, work-based learning has its origins in experiential learning theory (ELT). </p>
+        <p>Pioneered by American John Dewey, experiential learning theory attempts to clarify what types of experiences are most meaningful and engaging. David Allen Kolb, one of the main proponents of this theory, attempted to convert ELT into practice by defining a 4-stage learning cycle, consisting of concrete experience, reflective observation, abstract conceptualization and active experimentationWBL proposes that learning should take place in combination with, and through work – its sole aim being to maximize learning. </p>
+        <p>Learning would be maximized because applying knowledge and skills in the context of the workplace – with immediate practical outcomes– the learning experience is more meaningful and engaging, and so the individual is more likely to appreciate and thus retain the knowledge gained in the process. With work-based learning, a great deal of importance is put on the personal experience of the learner – and not adventitiously so, because, as McLennan & Keating remark, work-based learning has its origins in experiential learning theory (ELT). Pioneered by American John Dewey, experiential learning theory attempts to clarify what types of experiences are most meaningful and engaging.</p>
+        <p>David Allen Kolb, one of the main proponents of this theory, attempted to convert ELT into practice by defining a 4-stage learning cycle, consisting of concrete experience, reflective observation, abstract conceptualization and active experimentation.</p>
+        <a href="{% url 'interactWBL:dashboard' %}">Back</a>
     </div>
+
 {% endblock %}

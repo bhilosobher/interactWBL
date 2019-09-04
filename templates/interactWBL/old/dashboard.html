@@ -1,0 +1,61 @@
+{% extends 'interactWBL/base.html' %}
+{% load staticfiles %}
+{% block title_block %}
+    Dashboard
+{% endblock %}
+
+{% block body_block %}
+    <div class="container">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 col-xs-3">
+
+            <ul class="nav nav-pills flex-column">
+                <li class="nav-item">Type to find a student:</li>
+                <form>
+                    <li class="nav-item"><input class="search-query form-control" type="text"
+                                                name="suggestion" value="" id="suggestion"/>
+                    </li>
+                </form>
+            </ul>
+
+            <hr/> <!-- horizontal line separating the searchbox and the search suggestions -->
+
+            <!-- This is where JQuery will put and  manipulate the suggested students/courses via AJAX-->
+            <div id="cats">
+
+            </div>
+
+
+        </div>
+
+
+        <div class="col-sm-9  col-md-10 col-xs-9">
+            <!-- this div is formatted as to house the main content pane/body block-->
+               <h1>This is the dashboard</h1>
+    <div>
+        More coming soon. <br>
+        <h1>Courses:</h1>
+        {% if courses %}
+        <ul>
+            {% for course in courses %}
+            <li><a href="{% url 'interactWBL:show_course' course.slug %}"> {{ course.name }}</a></li>
+            {% endfor %}
+        </ul>
+        {% else %}
+            <strong>There are no courses in the database</strong>
+        {% endif %}
+        <a href="{% url 'interactWBL:add_course' %}"> Add New Course</a>
+        <br><br>
+        <a href="{% url 'interactWBL:competencies' %}">Defined competencies</a>
+    </div>
+
+        </div>
+
+
+    </div>
+</div>
+
+
+
+
+{% endblock %}

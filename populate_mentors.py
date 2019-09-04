@@ -26,7 +26,9 @@ def populate():
     i = 0
     while i < 50:
         for c in companies:
-            u = User.objects.get_or_create(username=mentor_names[i], password='securepassword')[0]
+            u = User.objects.get_or_create(username=mentor_names[i].lower(), password='securepassword')[0]
+            u.set_password('securepassword')
+            u.save()
             m = Mentor.objects.get_or_create(company=c, user=u)
             u.first_name=mentor_names[i]
             u.last_name=names.get_last_name()

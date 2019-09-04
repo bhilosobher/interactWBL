@@ -1,0 +1,47 @@
+{% extends 'interactWBL/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+    Add Competency
+{% endblock %}
+
+{% block no_sidebar %}
+      <li class="nav-item">
+            <a class="nav-link" href="{% url 'interactWBL:dashboard' %}">
+                <i class="fas fa-home"></i></i>
+                <span>Back to landing</span>
+            </a>
+        </li>
+{% endblock %}
+
+{% block breadcrumbs %}
+    <li class="breadcrumb-item">
+        <a href="{% url 'interactWBL:competencies' %}">Competencies</a>
+    </li>
+    <li class="breadcrumb-item">
+        <a href="{% url 'interactWBL:add_competency' %}"> Add New Competency </a>
+    </li>
+
+{% endblock %}
+
+{%block content_block %}
+    <h1>Add a competency</h1>
+    <div>
+        <form id="course_form" method="post" action="{% url 'interactWBL:add_competency' %}">
+            {% csrf_token %}
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+            {% for field in form.visible_fields %}
+                <ul>
+                    <li>
+                        {{ field.errors }}
+                        {{ field.help_text }}
+                    </li>
+                    {{ field }}
+                </ul>
+            {% endfor %}
+            <input type="submit" name="submit" value="Create Competency">
+        </form>
+    </div>
+{% endblock %}

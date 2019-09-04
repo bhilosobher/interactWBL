@@ -5,7 +5,18 @@
     Add Course
 {% endblock %}
 
-{%block body_block %}
+{% block breadcrumbs %}
+    <li class="breadcrumb-item">
+        <a href="{% url 'interactWBL:my_courses' %}">My Courses</a>
+    </li>
+    <li class="breadcrumb-item">
+        <a href="{% url 'interactWBL:add_course' %}"> Add Course </a>
+    </li>
+
+{% endblock %}
+
+
+{%block content_block %}
     <h1>Add a course</h1>
     <div>
         <form id="course_form" method="post" action="{% url 'interactWBL:add_course' %}">
