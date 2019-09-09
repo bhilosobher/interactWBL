@@ -16,6 +16,13 @@
 
 {% block content_block %}
     <h1>Register here</h1>
+    <br>
+    <h3>Important:
+    </h3>
+    <br>
+    <h5>If you are a student or academic, you must register with you University of Glasgow email account, ending with @student.gla.ac.uk and @gla.ac.uk, respectively. </h5>
+    <h5>Otherwise, the system will consider you a mentor.</h5>
+    <br>
     <form action="." method="post">
         {% csrf_token %}
         {{ form.as_p }}

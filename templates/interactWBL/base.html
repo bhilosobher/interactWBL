@@ -48,7 +48,7 @@
                                               alt="School of Computing Science"></a>
     </div>
 
-    <!-- Navbar Search -->
+    <!-- Navbar student search - not implemented
 
     <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
         <div class="input-group">
@@ -62,7 +62,7 @@
         </div>
     </form>
 
-    <!-- Navbar -->
+     Navbar -->
 
     <ul class="navbar-nav ml-auto ml-md-0">
 
@@ -187,7 +187,7 @@
                         {% endfor %}
 
                         <div class="dropdown-divider"></div>
-                        <h6 class="dropdown-header"><a href="{% url 'interactWBL:competencies'%}">All mentorees</a></h6>
+                        <h6 class="dropdown-header"><a href="">All mentorees</a></h6>
                     {% else %}
                         <h6 class="dropdown-header">Courses section</h6>
 
@@ -196,13 +196,7 @@
 
                 </div>
             </li>
-            {% if not is_mentor %}
-            <li class="nav-item">
-                <a class="nav-link" href="">
-                    <i class="fas fa-user-graduate"></i>
-                    <span>Students</span></a>
-            </li>
-            {% endif %}
+
             {% if is_academic or is_student %}
                      <li class="nav-item">
                 <a class="nav-link" href="{% url 'interactWBL:mentors' %}">

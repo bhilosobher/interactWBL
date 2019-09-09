@@ -8,7 +8,7 @@
 
 {% block content_block %}
 	<div class="page-header">
-		<h1>{{selecteduser.username}}'s profile</h1>
+		<h1>{{selecteduser.first_name}}'s profile</h1>
 	</div>
     <br>
 	<div id="profile_data">
@@ -19,10 +19,31 @@
     		<input type="submit" value="Update" />
     	</form>
         {% else %}
-            <p>{{ selecteduser.first_name }} {{ selecteduser.last_name }}</p>
+            <h3>{{ selecteduser.first_name }} {{ selecteduser.last_name }}</h3>
 		<p><strong>Email:</strong> {{selecteduser.email}}</p>
-
 
 		{% endif %}
 	</div>
+    {% if is_academic %}
+        {% if reflections %}
+            <h4> {{ selecteduser.first_name}} has written the following reflections pertaining to your courses:</h4>
+             <hr>
+            {% for r in reflections %}
+               <ul>
+                    <li><strong>Course: </strong><a href="{% url 'interactWBL:show_course' r.course.slug %}">{{ r.course.name }}</a></li>
+                    <li><strong>Reflection type: </strong>{{ r.type }}</li>
+                    <li><strong>Content:</strong>  {{ r.content }}</li>
+                   <br>
+               <h5>Competencies targeted in reflection:</h5>
+                    {% for competency in r.competencies.all %}
+                        <li>{{ competency.name }}</li>
+                        {% endfor %}
+
+
+               </ul>
+                <hr>
+            {% endfor %}
+              <a href="{% url 'interactWBL:competencies' %}" class="button" id="add_competency_button">View all competencies</a>
+            {% endif %}
+    {% endif %}
 {% endblock %}

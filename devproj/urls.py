@@ -47,14 +47,14 @@ class MyLoginView(LoginView):
                 StudentLogins.objects.create(student=logged_student)
                 print("One student login logged!")
             except Student.DoesNotExist:
-                print("passed!")
+                print("logged in user is not a student")
                 pass
             try:
                 logged_mentor = Mentor.objects.get(user=user)
                 MentorLogins.objects.create(mentor=logged_mentor)
                 print("One mentor login logged!")
             except Mentor.DoesNotExist:
-                print("passed!")
+                print("logged in user is not a mentor!")
                 pass
         return HttpResponseRedirect(self.get_success_url())
     redirect_authenticated_user = True

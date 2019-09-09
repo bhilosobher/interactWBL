@@ -1,5 +1,5 @@
 from django import forms
-from interactWBL.models import Course, Reflection, Competency, PersonalCompetency, Mentor, Student, Company
+from interactWBL.models import Course, Competency, PersonalCompetency, Mentor, Student, Company, CourseTarget, Enrolment
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 # these are form models which handle creating and saving a model into the database (by users)
@@ -30,6 +30,21 @@ class CompetencyForm(forms.ModelForm):
         model = Competency
         exclude = ()
 
+
+class CourseTargetsForm(forms.ModelForm):
+    competency = forms.ModelChoiceField(queryset=Competency.objects.all(),
+                                        help_text="Please select a competency for the course to target")
+    class Meta:
+        model = CourseTarget
+        exclude = ('course',)
+
+
+class EnrollmentForm(forms.ModelForm):
+    student = forms.ModelChoiceField(queryset=Student.objects.all(), help_text="Please select a student to enroll in course")
+
+    class Meta:
+        model = Enrolment
+        exclude = ('course',)
 
 
 class StudentForm(forms.ModelForm):
@@ -89,7 +104,7 @@ class CourseForm(forms.ModelForm):
 
     class Meta:
         help_texts = {'description': 'Please enter course description',
-                      'missed_lecture_procedure': 'Please specify themissed lectures procedure',
+                      'missed_lecture_procedure': 'Please specify the missed lectures procedure',
                       'ILOs': 'Please list the intended learning outcomes of the course',}
         model = Course
         exclude = ('teacher',)

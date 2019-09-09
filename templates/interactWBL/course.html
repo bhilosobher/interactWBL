@@ -23,61 +23,35 @@
 
     {% if course %}
         <h1>{{ course.name }}</h1>
+        <ul>
+            <hr>
+            <h6>About</h6>
+            <li> {{ course.description }} </li>
+            <hr>
+            <h6>ILOs</h6>
+            <li> {{ course.ILOs }}</li>
+            <hr>
+            <h6>Missed lectures procedure</h6>
+            <li> {{ course.missed_lecture_procedure }}</li>
+            <hr>
+            <li><strong>Link to Moodle: </strong><a href="{{ course.moodle }}">{{ course.moodle }}</a></li>
+            <li><strong>Link to lecture recordings: </strong> <a
+                    href="{{ course.lecture_recordings }}">{{ course.lecture_recordings }}</a></li>
+            <hr>
+        </ul>
 
-        <br>
-        <h3>Competencies targeted by {{ course.name }}:</h3>
-        {% if competencies %}
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                        <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Type</th>
-                            <th>Description</th>
-                                {% if is_academic %}
-                            <th>Remove?</th>
-                                {% endif %}
+        {% if course.assignment_set %}
+            <h3>Course assignments to date:</h3>
+            <ul>
+                {% for assignment in course.assignment_set.all %}
 
-                        </tr>
-                        </thead>
-                        <tfoot>
-                        <tr>
-                            <th>Name</th>
-                            <th>Type</th>
-                            <th>Description</th>
-                                {% if is_academic %}
-                            <th>Remove?</th>
-                                {% endif %}
-
-
-                        </tr>
-                        </tfoot>
-                        <tbody>
-
-                        {% for competency in competencies %}
-                            <tr>
-                                <td>{{ competency.competency.name }}</td>
-                                <td>{{ competency.competency.type }}</td>
-                                <td>{{ competency.competency.description }}</td>
-                                {% if is_academic %}
-                                <td><a href="{% url 'interactWBL:remove_target' competency.id %}"> <i class="fas fa-trash"></i></a></td>
-                                {% endif %}
-
-                            </tr>
-
-                        {% endfor %}
-
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        {% else %}
-            <h1>No competencies are defined in the database...yet.</h1>
+                    <li><strong>Name:</strong> {{ assignment.name }}</li>
+                    <li><strong>Description/task:</strong> {{ assignment.description }}</li>
+                    <li><strong>Deadline:</strong> {{ assignment.deadline }}</li>
+                {% endfor %}
+            </ul>
+            <hr>
         {% endif %}
-
-        <br>
-
 
         {% if students %}
             <br>
@@ -91,9 +65,9 @@
                             <th>Email</th>
                             <th>Year</th>
                             {% if is_academic %}
-                            <th>Mentor</th>
-                            <th>Company</th>
-                                {% endif %}
+                                <th>Mentor</th>
+                                <th>Company</th>
+                            {% endif %}
                         </tr>
                         </thead>
                         <tfoot>
@@ -101,10 +75,10 @@
                             <th>Name</th>
                             <th>Email</th>
                             <th>Year</th>
-                                {% if is_academic %}
-                            <th>Mentor</th>
-                            <th>Company</th>
-                                    {% endif %}
+                            {% if is_academic %}
+                                <th>Mentor</th>
+                                <th>Company</th>
+                            {% endif %}
                         </tr>
                         </tfoot>
                         <tbody>
@@ -117,11 +91,11 @@
                                 <td>{{ student.user.email }}</td>
                                 <td>{{ student.year }}</td>
                                 {% if is_academic %}
-                                <td>
-                                    <a href="{% url 'interactWBL:profile' student.mentor.user.username %}">{{ student.mentor.user.first_name }} {{ student.mentor.user.last_name }}</a>
-                                </td>
-                                <td>{{ student.mentor.company }}</td>
-                            {% endif %}
+                                    <td>
+                                        <a href="{% url 'interactWBL:profile' student.mentor.user.username %}">{{ student.mentor.user.first_name }} {{ student.mentor.user.last_name }}</a>
+                                    </td>
+                                    <td>{{ student.mentor.company }}</td>
+                                {% endif %}
                             </tr>
 
                         {% endfor %}
@@ -134,6 +108,70 @@
         {% else %}
             <strong>No students currently enrolled in this course.</strong>
         {% endif %}
+        {% if is_academic and active_academic == course.teacher %}
+            <a href="{% url 'interactWBL:enroll' course.slug %}" class="button" id="add_competency_button">Enroll new
+                student</a>
+        {% endif %}
+
+        <h3>Competencies targeted by {{ course.name }}: </h3>
+        {% if competencies %}
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            {% if is_academic and active_academic == course.teacher %}
+                                <th>Remove?</th>
+                            {% endif %}
+
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            {% if is_academic and active_academic == course.teacher %}
+                                <th>Remove?</th>
+                            {% endif %}
+
+
+                        </tr>
+                        </tfoot>
+                        <tbody>
+
+                        {% for competency in competencies %}
+                            <tr>
+                                <td>{{ competency.competency.name }}</td>
+                                <td>{{ competency.competency.type }}</td>
+                                <td>{{ competency.competency.description }}</td>
+                                {% if is_academic and active_academic == course.teacher %}
+                                    <td><a href="{% url 'interactWBL:remove_target' competency.id %}"> <i
+                                            class="fas fa-trash"></i></a></td>
+                                {% endif %}
+
+                            </tr>
+
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        {% else %}
+            <h6>No target competencies present in the database...yet.</h6>
+        {% endif %}
+        {% if is_academic and active_academic == course.teacher %}
+            <a href="{% url 'interactWBL:add_competency_targets_to_course' course.slug %}" class="button"
+               id="add_competency_button">Add new course target</a>
+        {% endif %}
+        <br>
+
+
     {% else %}
         <strong>The course you are looking for does not exist!</strong>
     {% endif %}

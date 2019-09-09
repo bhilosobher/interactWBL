@@ -148,4 +148,4 @@ REGISTRATION_AUTO_LOGIN = True
 
 LOGIN_REDIRECT_URL = '/interactWBL/dashboard/'
 
-LOGIN_URL = 'accounts/login/'
+LOGIN_URL = 'http://127.0.0.1:8000/interactWBL/'

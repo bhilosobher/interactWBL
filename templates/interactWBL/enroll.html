@@ -1,0 +1,47 @@
+{% extends 'interactWBL/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+    Enroll student
+{% endblock %}
+
+{% block breadcrumbs %}
+    <li class="breadcrumb-item">
+        <a href="{% url 'interactWBL:my_courses' %}">My Courses</a>
+    </li>
+
+    <li class="breadcrumb-item">
+        <a href="{% url 'interactWBL:show_course' course.slug %}"> {{ course.name }} </a>
+    </li>
+
+    <li class="breadcrumb-item">
+        <a href="#"> Enroll student in course</a>
+    </li>
+
+{% endblock %}
+
+{% block no_sidebar %}
+{% endblock %}
+
+
+{%block content_block %}
+    <h1> Enroll student in course</h1>
+    <div>
+        <form id="enroll_form" method="post" action="{% url 'interactWBL:enroll' course.slug %}">
+            {% csrf_token %}
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+            {% for field in form.visible_fields %}
+                <ul>
+                    <li>
+                        {{ field.errors }}
+                        {{ field.help_text }}
+                    </li>
+                    {{ field }}
+                </ul>
+            {% endfor %}
+            <input type="submit" name="submit" value="Enroll student">
+        </form>
+    </div>
+{% endblock %}

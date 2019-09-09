@@ -16,7 +16,7 @@ Dashboard
                 <div class="card-body-icon">
                   <i class="fas fa-fw fa-brain"></i>
                 </div>
-                <div class="mr-5">30 reflections this week!</div>
+                <div class="mr-5">{{ reflections_number }} reflections from your students!</div>
               </div>
               <a class="card-footer text-white clearfix small z-1" href="#">
                 <span class="float-left">View Details</span>
@@ -32,7 +32,7 @@ Dashboard
                 <div class="card-body-icon">
                   <i class="fas fa-fw fa-laptop-code"></i>
                 </div>
-                <div class="mr-5">10 assignments submissions!</div>
+                <div class="mr-5">{{submissions_number}} assignments submissions!</div>
               </div>
               <a class="card-footer text-white clearfix small z-1" href="#">
                 <span class="float-left">View Details</span>
@@ -82,7 +82,7 @@ Dashboard
 
        <div class="card mb-3">
 
-            <h1>Your Courses:</h1>
+            <h1>Your {% if is_mentor %}Mentorees' {% endif %}Courses:</h1>
             {% get_courses user %}
         </div>
 
@@ -95,17 +95,6 @@ Dashboard
 
 
     {% if is_academic %}
-        <!-- Charts and graphs-->
-        <div class="card mb-3">
-          <div class="card-header">
-            <i class="fas fa-chart-area"></i>
-            WBL Analytics</div>
-          <div class="card-body">
-            <canvas id="myAreaChart" width="100%" height="30"></canvas>
-          </div>
-        </div>
-
-
 
         <!-- Table of students -->
 
@@ -158,6 +147,61 @@ Dashboard
             </div>
           </div>
         </div>
+
+            <div class="card mb-3">
+          <div class="card-header">
+            <i class="fas fa-chart-area"></i>
+            WBL Analytics  (graphs tracking commpetency achievement/progression data - not yet implemented)</div>
+          <div class="card-body">
+            <canvas id="myAreaChart" width="100%" height="30"></canvas>
+          </div>
+        </div>
+     {% elif is_mentor %}
+           <div class="card mb-3">
+          <div class="card-header">
+            <i class="fas fa-table"></i>
+            Your mentorees</div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Year</th>
+
+
+                  </tr>
+                </thead>
+                <tfoot>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Year</th>
+
+
+                  </tr>
+                </tfoot>
+                <tbody>
+
+                {% for student in students %}
+                  <tr>
+                    <td><a href="{% url 'interactWBL:profile' student.user.username %}">{{ student.user.first_name }} {{ student.user.last_name }}</a></td>
+                    <td>{{ student.user.email }}</td>
+                    <td>{{ student.year }}</td>
+                  </tr>
+                {% endfor %}
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+
+             <!-- Charts and graphs-->
+
+
     {% endif %}
       <!-- /.container-fluid -->
 {%  endblock %}

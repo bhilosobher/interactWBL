@@ -69,6 +69,9 @@ class StudentLogins (models.Model):
     student = models.ForeignKey(Student)
     date = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        verbose_name_plural = "Student logins"
+
     def __str__(self):
         return str(self.student) + ':' + str(self.date)
 
@@ -76,6 +79,9 @@ class StudentLogins (models.Model):
 class MentorLogins(models.Model):
     mentor = models.ForeignKey(Mentor)
     date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = "Mentor logins"
 
     def __str__(self):
         return str(self.mentor) + ':' + str(self.date)
@@ -130,11 +136,22 @@ class Assignment(models.Model):
     description = models.TextField()
     deadline = models.DateField(auto_now_add=True)
     mentor = models.ForeignKey(Mentor, blank=True, null=True)
+    # the assignment model refers to the student field because it was envisaged that the students might be given
+    # individual assignments by their mentors, through the system (as an extra feature)
     student = models.ForeignKey(Student, blank=True, null=True)
     competencies = models.ManyToManyField(Competency)
 
     def __str__(self):
         return self.name + " assignment"
+
+class ReflectionTopic(models.Model):
+    topic = models.TextField()
+    student = models.ForeignKey(Student, null=True, blank=True)
+    course = models.ForeignKey(Course, null =True, blank= True)
+    academic = models.ForeignKey(Academic, null=True, blank=True)
+    mentor = models.ForeignKey(Mentor, null= True, blank=True)
+    def __str__(self):
+        return "reflection on "+self.topic
 
 
 class Reflection(models.Model):
@@ -142,8 +159,9 @@ class Reflection(models.Model):
         ('quick', 'Quick Reflection'),
         ('weekly', 'Weekly Reflection'),
     )
+    topic = models.ForeignKey(ReflectionTopic, null=True, blank=True)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, blank=True,null=True)
     type = models.CharField(choices=REFLECTION_TYPE_CHOICES, max_length=32)
     date = models.DateField(auto_now_add=True)
     content = models.TextField()
@@ -173,9 +191,10 @@ class Submission(models.Model):
     file = models.FileField(upload_to='coursework_submissions', null=True,blank = True)
     date = models.DateField(auto_now_add=True)
     grader = models.ForeignKey(Academic, on_delete=models.CASCADE, blank=True, null=True)
+    course = models.ForeignKey(Course, null=True, blank=True)
 
     def __str__(self):
-        return 'submission ' + str(self.id)
+        return 'submission for '+self.course.name + " by "+ self.student.user.username
 
 
 class PersonalCompetency(models.Model):
@@ -204,7 +223,8 @@ class CompetencyEndorsement(models.Model):
         ('2', 'good'),
         ('3', 'excellent'),
     )
-    author = models.ForeignKey(User)
+    mentor = models.ForeignKey(Mentor, null=True,blank=True)
+    academic = models.ForeignKey(Academic, null=True,blank=True)
     competency = models.ForeignKey(PersonalCompetency)
     date = models.DateField(auto_now_add=True)
     progress = (models.CharField(choices=COMPETENCY_PROGRESS_CHOICES, max_length=16))

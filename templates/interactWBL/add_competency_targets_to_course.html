@@ -1,0 +1,47 @@
+{% extends 'interactWBL/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+    Add Course
+{% endblock %}
+
+{% block breadcrumbs %}
+    <li class="breadcrumb-item">
+        <a href="{% url 'interactWBL:my_courses' %}">My Courses</a>
+    </li>
+
+    <li class="breadcrumb-item">
+        <a href="{% url 'interactWBL:show_course' course.slug %}"> {{ course.name }} </a>
+    </li>
+
+    <li class="breadcrumb-item">
+        <a href="#"> Add New Competency Target </a>
+    </li>
+
+{% endblock %}
+
+{% block no_sidebar %}
+{% endblock %}
+
+
+{%block content_block %}
+    <h1>Add competency targets</h1>
+    <div>
+        <form id="competency_target_form" method="post" action="{% url 'interactWBL:add_competency_targets_to_course' course.slug %}">
+            {% csrf_token %}
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+            {% for field in form.visible_fields %}
+                <ul>
+                    <li>
+                        {{ field.errors }}
+                        {{ field.help_text }}
+                    </li>
+                    {{ field }}
+                </ul>
+            {% endfor %}
+            <input type="submit" name="submit" value="Add selected competency targets">
+        </form>
+    </div>
+{% endblock %}

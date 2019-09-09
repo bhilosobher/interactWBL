@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
-from interactWBL.models import Course, Academic, Competency, Enrolment, Student, Mentor, Company, CourseTarget, StudentLogins, MentorLogins
+from interactWBL.models import Course, Academic, Competency, Enrolment, Student, Mentor, Company, CourseTarget, StudentLogins, MentorLogins, Reflection, Assignment, Submission
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
-from interactWBL.forms import CourseForm, StudentForm, MentorForm, SignUpForm, CompetencyForm
+from interactWBL.forms import CourseForm, StudentForm, MentorForm, SignUpForm, CompetencyForm,CourseTargetsForm,EnrollmentForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 
@@ -77,6 +77,11 @@ def dashboard(request):
         for e in enrolments:
             courses.append(e.course)
         context_dict['courses'] = courses
+    elif is_mentor:
+        mentor = Mentor.objects.get(user = request.user)
+        students = list(Student.objects.filter(mentor=mentor))
+        context_dict['students'] = students
+
 
     # finally, find out the students enrolled in the courses the academic is teaching
 
@@ -96,6 +101,18 @@ def dashboard(request):
                 students_of_active_academic.append(enrolment.student)
         # now we take that list and we transform it in a set, to remove duplicates
         students_set= set(students_of_active_academic)
+
+        # find out how many reflections and submissions there are for the academic's courses
+        number_of_submissions = 0
+        number_of_reflections = 0
+        for course in active_academic_courses:
+            reflections = list(Reflection.objects.filter(course=course))
+            submissions = list(Submission.objects.filter(course=course))
+            number_of_submissions+=len(submissions)
+            number_of_reflections+=len(reflections)
+        # after finding out, add them to the dictionary to pass the values to the templates for display
+        context_dict['reflections_number'] = number_of_reflections
+        context_dict['submissions_number'] = number_of_submissions
 
         # finally, for each student login in the DB, we see if the student belongs to the set of the academic's pupils
         student_logins = list(StudentLogins.objects.all())
@@ -169,7 +186,8 @@ def show_course(request, course_name_slug):
         context_dict['students'] = students
         # if the user is a teacher, determine the courses they are teaching and later list them in the template
         if is_teacher:
-            active_academic = Academic.objects.filter(user=request.user)
+            active_academic = Academic.objects.get(user=request.user)
+            context_dict['active_academic'] = active_academic
             context_dict['courses'] = Course.objects.filter(teacher=active_academic)
         # if it is a student, then find out what courses they are taking to they can be displayed as well
         elif is_student:
@@ -182,6 +200,7 @@ def show_course(request, course_name_slug):
 
     except Course.DoesNotExist:
         # get here if the specified course does not exist; do nothing
+        context_dict= {}
         context_dict['course'] = None
         context_dict['students'] = None
     return render(request, 'interactWBL/course.html', context_dict)
@@ -211,8 +230,50 @@ def add_competency(request):
     context_dict['form'] = form
     return render(request, 'interactWBL/add_competency.html', context_dict)
 
+@login_required
+def add_target(request, course_name_slug):
 
-@login_required()
+    course = Course.objects.get(slug = course_name_slug)
+    is_academic = determine_profile(request)[0]
+    if not is_academic:
+        return HttpResponse("You do not have access to this page")
+    form = CourseTargetsForm()
+    if request.method == 'POST':
+        form = CourseTargetsForm(request.POST)
+        if form.is_valid():
+            course_target = form.save(commit=False)
+            course_target.course = course
+            course_target.save()
+            return show_course(request, course.slug)
+        else:
+            print(form.errors)
+    context_dict = {}
+    context_dict['course'] = course
+    context_dict['form'] = form
+    return render(request, 'interactWBL/add_competency_targets_to_course.html', context_dict)
+
+@login_required
+def enroll(request, course_name_slug):
+    course = Course.objects.get(slug=course_name_slug)
+    is_academic = determine_profile(request)[0]
+    if not is_academic:
+        return HttpResponse("You do not have access to this page")
+    form = EnrollmentForm()
+    if request.method == 'POST':
+        form = EnrollmentForm(request.POST)
+        if form.is_valid():
+            course_target = form.save(commit=False)
+            course_target.course = course
+            course_target.save()
+            return show_course(request, course.slug)
+        else:
+            print(form.erros)
+    context_dict = {}
+    context_dict['course'] = course
+    context_dict['form'] = form
+    return render(request, 'interactWBL/enroll.html', context_dict)
+
+@login_required
 def add_course(request):
     # dermine if the user requesting this page has an academic profile (i.e. is an academic)
     is_academic = False
@@ -240,7 +301,7 @@ def add_course(request):
                 course.teacher = teacher
                 course.save()
                 # what do after created course succesfully? redirect to course page/dashboard
-                return dashboard(request)
+                return add_target(request,course.slug)
             else:
                 print(form.errors)
 
@@ -276,6 +337,10 @@ def competencies(request):
         for e in enrolments:
             courses.append(e.course)
         context_dict['courses'] = courses
+    elif is_mentor:
+        mentor = Mentor.objects.get(user=request.user)
+        students = list(Student.objects.filter(mentor=mentor))
+        context_dict['students'] = students
 
     return render(request, 'interactWBL/competencies.html', context_dict)
 
@@ -361,7 +426,7 @@ def profile(request, username):
                     form.save(commit=True)
                     return redirect('interactWBL:dashboard')
                 else:
-                    print(form.erros)
+                    print(form.errors)
 
     (is_teacher, is_student, is_mentor) = determine_profile(request)
     context_dict = {}
@@ -374,7 +439,18 @@ def profile(request, username):
     # if the user is an academic, find the courses they teach and pass them to the template to be displayed
     if is_teacher:
         active_academic = Academic.objects.filter(user=request.user)
-        context_dict['courses'] = Course.objects.filter(teacher=active_academic)
+        active_academic_courses = Course.objects.filter(teacher=active_academic)
+        context_dict['courses'] = active_academic_courses
+
+        # now let's do some further querying to find & list the student's reflections
+        try:
+            reflections = []
+            student_being_viewed = Student.objects.get(user=user)
+            for course in active_academic_courses:
+                reflections += list(Reflection.objects.filter(student=student_being_viewed).filter(course=course))
+            context_dict['reflections'] = reflections
+        except Student.DoesNotExist:
+            pass
     # if the user is a student, find the courses they are enrolled in, put them in a list and pass it to the template
     elif is_student:
         active_student = Student.objects.filter(user=request.user)
@@ -383,6 +459,12 @@ def profile(request, username):
         for e in enrolments:
             courses.append(e.course)
         context_dict['courses'] = courses
+
+
+
+
+
+
 
     return render(request, 'interactWBL/profile.html', context_dict)
 
@@ -420,3 +502,19 @@ def remove_target(request, target_id):
     course = CourseTarget.objects.get(id=target_id).course
     CourseTarget.objects.get(id = target_id).delete()
     return show_course(request,course.slug)
+
+def students(request):
+    context_dict = {}
+    (is_teacher, is_student, is_mentor) = determine_profile(request)
+    if is_teacher:
+        active_academic = Academic.objects.get(user=request.user)
+        active_academic_courses = active_academic.course_set
+        context_dict['courses'] = active_academic_courses
+
+        # if it is a student, then find out what courses they are taking to they can be displayed as well
+    elif is_mentor:
+        mentor = Mentor.objects.get(user=request.user)
+        students = list(Student.objects.filter(mentor=mentor))
+        context_dict['students'] = students
+
+    return render(request, 'interactWBL/students.html', context_dict)
